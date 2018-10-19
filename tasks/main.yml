@@ -1,0 +1,32 @@
+---
+# tasks file for hmpps-delius-core-apacheds-installer
+
+- name: Check is ApacheDS is installed
+  yum:
+    list: apacheds
+  register: installed
+
+- block:
+    - name: Get our ApacheDS artifacts from S3
+      include: copy-artifacts.yml
+      with_items: "{{ apacheds_artefacts + apacheds_rpms }}"
+      loop_control:
+        loop_var: artefact
+
+    - name: Install ApacheDS
+      yum:
+        name: "{{ rpm.dest|default(/tmp/' + rpm.name) }}"
+        state: present
+      with_items: "{{ apacheds_rpms }}"
+      loop_control:
+        loop_var: rpm
+
+    - name: Clean up after ourselves
+      file:
+        state: absent
+        path: "{{ artefact.dest|default(/tmp/' + artefact.name) }}"
+      with_items: "{{ apacheds_artefacts + apacheds_rpms }}"
+      loop_control:
+        loop_var: artefact
+
+  when: installed.results | selectattr("yumstate", "match", "installed") | list | length == 0

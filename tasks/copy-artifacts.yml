@@ -1,0 +1,8 @@
+---
+
+- name: Get our packages from S3
+  aws_s3:
+    bucket: "{{ apacheds_artifact_bucket }}"
+    object: "/{{ artefact_path }}/{{ artefact.name }}"
+    dest: "{{ artefact.dest|default('/tmp/' + artefact.name) }}"
+    mode: get
