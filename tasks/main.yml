@@ -9,7 +9,7 @@
 - block:
     - name: Get our ApacheDS artifacts from S3
       include: copy-artifacts.yml
-      with_items: "{{ apacheds_artefacts + apacheds_rpms }}"
+      with_items: "{{ apacheds_rpms }}"
       loop_control:
         loop_var: artefact
 
@@ -25,7 +25,7 @@
       file:
         state: absent
         path: "{{ artefact.dest|default(/tmp/' + artefact.name) }}"
-      with_items: "{{ apacheds_artefacts + apacheds_rpms }}"
+      with_items: "{{ apacheds_rpms }}"
       loop_control:
         loop_var: artefact
 
