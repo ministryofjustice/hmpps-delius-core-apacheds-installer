@@ -15,7 +15,7 @@
 
     - name: Install ApacheDS
       yum:
-        name: "{{ rpm.dest|default(/tmp/' + rpm.name) }}"
+        name: "{{ rpm.dest|default('/tmp/' + rpm.name) }}"
         state: present
       with_items: "{{ apacheds_rpms }}"
       loop_control:
@@ -24,7 +24,7 @@
     - name: Clean up after ourselves
       file:
         state: absent
-        path: "{{ artefact.dest|default(/tmp/' + artefact.name) }}"
+        path: "{{ artefact.dest|default('/tmp/' + artefact.name) }}"
       with_items: "{{ apacheds_rpms }}"
       loop_control:
         loop_var: artefact
